@@ -15,17 +15,24 @@ def get_users(session: SessionDep)->list[User]:#fastapi crea una sessione del da
 @router.post("/", status_code=201)
 def create_user(user: User, session: SessionDep)->User:
     """Create a new user."""
-    if user in session.exec(select(User)).all():
+    existing_user = session.exec(
+        select(User).
+        where(User.username == user.username)
+    ).first()
+    if existing_user is None:
         raise HTTPException(status_code=400, detail="User already exists")
     session.add(user)
     session.commit()
     session.refresh(user)
     return user
 
-@router.get("/users/{username}")
+@router.get("/{username}")
 def get_user(username: str, session: SessionDep)->User:
     """Return the user."""
-    user = session.exec(select(User).where(User.username == username)).first()
-    if user in None:
+    user = session.exec(
+        select(User).
+        where(User.username == username)
+    ).first()
+    if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return user
