@@ -15,6 +15,8 @@ def get_users(session: SessionDep)->list[User]:#fastapi crea una sessione del da
 @router.post("/", status_code=201)
 def create_user(user: User, session: SessionDep)->User:
     """Create a new user."""
+    if user in session.exec(select(User)).all():
+        raise HTTPException(status_code=400, detail="User already exists")
     session.add(user)
     session.commit()
     session.refresh(user)
