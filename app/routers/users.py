@@ -7,5 +7,6 @@ from app.data.db import SessionDep
 router = APIRouter(prefix="/users", tags=["users"])
 @router.get("")
 def get_users(session: SessionDep)->list[User]:#fastapi crea una sessione del database per passarla alla funzione che restituisce una lista
+    """Return the list of all existing users."""
     users = session.exec(select(User)).all()#query sql seleziona tutti gli utenti della tabella user
     return users
