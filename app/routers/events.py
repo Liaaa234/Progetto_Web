@@ -6,7 +6,7 @@ from app.models.event import Event,EventCreate, EventDB, EventPublic
 router = APIRouter(prefix="/events", tags=["events"])
 
 @router.get("/")    #prendiamo la lista di tutti gli eventi
-def get_all_events(session: SessionDep) -> list[Event]: #comunichiamo con il database
+def get_all_events(session: SessionDep) -> list[EventPublic]: #comunichiamo con il database
     """Return the list of all events."""
     events = session.exec(select(EventDB)).all()  #query
     return events
