@@ -40,4 +40,6 @@ def delete_registration(
     session.delete(registration)
     session.commit()
 
-    return "Registration successfully deleted"
+    return {
+        "message": "Registration successfully deleted"
+    }
