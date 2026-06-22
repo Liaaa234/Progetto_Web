@@ -8,7 +8,7 @@ router = APIRouter(prefix="/events", tags=["events"])
 @router.get("/")    #prendiamo la lista di tutti gli eventi
 def get_all_events(session: SessionDep) -> list[Event]: #comunichiamo con il database
     """Return the list of all events."""
-    events = session.exec(select(Event)).all()  #query
+    events = session.exec(select(EventDB)).all()  #query
     return events
 
 @router.get("/{id}")    #prendiamo UNO specifico evento
