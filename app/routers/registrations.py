@@ -5,7 +5,16 @@ from app.models.registration import Registration  #Importa il modello Registrati
 from app.data.db import SessionDep  #importa SessionDep dal file della configurazione del database
 
 #Inizializzo un'istanza APIRouter e la salvo nella variabile router
-router = APIRouter(
-    prefix="/registrations",
-    tags=["registrations"]
-)
+router = APIRouter(prefix="/registrations", tags=["registrations"])
+
+@router.get("/")
+def get_registrations(
+        session: SessionDep
+) -> list[Registration]:
+    """Returns a list of all registrations"""
+
+    registrations = session.exec(
+        select(Registration)
+    ).all()
+
+    return registrations
