@@ -12,7 +12,7 @@ def get_all_events(session: SessionDep) -> list[EventPublic]: #comunichiamo con 
     return events
 
 @router.get("/{id}")    #prendiamo UNO specifico evento
-def get_event_by_id(session: SessionDep) -> EventPublic:
+def get_event_by_id(session: SessionDep) -> EventPublic:#MANCA ID NEI PARAMETRI CHE PRENDE IN ENTRATA LA FUNZIONE
     """Return the event with the given id."""
     event = session.get(EventDB, id)  #cerchiamo nella tabella l'evento con quell'id
 
@@ -33,7 +33,7 @@ def create_event(
     return event_entry
 
 @router.put("/{id}")
-def replace_event(
+def replace_event(#MANCA ID NEI PARAMETRI CHE PRENDE IN ENTRATA LA FUNZIONE
         session: SessionDep,
         new_event: EventCreate
 ):
