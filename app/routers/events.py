@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import select
 from app.data.db import SessionDep
 from app.models.event import Event, EventCreate, EventDB, EventPublic
-from datetime import datetime
 
 router = APIRouter(prefix="/events", tags=["events"])
 
