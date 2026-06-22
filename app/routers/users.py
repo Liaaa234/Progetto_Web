@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from sqlmodel import select
 
 
-from app.models.user import User, UserDB, UserPublic, CreateUser
+from app.models.user import UserDB, UserPublic, CreateUser
 from app.data.db import SessionDep
 
 router = APIRouter(prefix="/users", tags=["users"])
