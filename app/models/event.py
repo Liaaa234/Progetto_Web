@@ -1,11 +1,20 @@
 #STRUTTURA DATI PER L'OGGETTO EVENTO
 
+from typing import Annotated
 from sqlmodel import Field, SQLModel
 from datetime import datetime
 
-class Event(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)  #generato automaticamente dal database
+class Event(SQLModel):      #radice e avrà gli attributi comuni per tutte le classi
     title: str
     description: str
     date: datetime
     location: str
+
+class EventCreate(Event):   #creiamo la classe da usare nelle POST
+    pass    #i campi sono ereditati da Event quindi lascio vuoti i campi
+
+class EventDB(Event, table=True):   #creiamo il collegamento tra il nostro codice e il dataabase
+    id: int = Field(default=None, primary_key=True)
+
+class EventPublic(Event):   #usata nelle GET
+    id: int
