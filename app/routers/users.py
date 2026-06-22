@@ -44,7 +44,6 @@ def delete_users(session: SessionDep)-> dict:
     for user in users:
         session.delete(user)
         session.commit()
-        session.refresh(user)
     return {"message": "All Users successfully deleted"}
 
 @router.delete("/{username}")
