@@ -46,3 +46,22 @@ def delete_users(session: SessionDep)-> dict:
         session.commit()
         session.refresh(user)
     return {"message": "All Users successfully deleted"}
+
+@router.delete("/{username}")
+def delete_user(username: str, session: SessionDep)-> dict:
+    """Delete one user."""
+
+    user = session.exec(
+        select(User)
+        .where(User.username == username)
+    ).first()
+
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    session.delete(user)
+    session.commit()
+
+    return {
+        "message":"User successfully deleted"
+    }
