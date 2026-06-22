@@ -19,7 +19,7 @@ def create_user(user: User, session: SessionDep)->User:
         select(User).
         where(User.username == user.username)
     ).first()
-    if existing_user is None:
+    if existing_user is not None:
         raise HTTPException(status_code=400, detail="User already exists")
     session.add(user)
     session.commit()
