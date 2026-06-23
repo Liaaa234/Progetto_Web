@@ -15,5 +15,3 @@ class UserDB(User, table=True):#classe che rappresenta la tabella del database
 
 class UserPublic(User):
     pass
-
-

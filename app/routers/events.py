@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import select, delete
 from app.data.db import SessionDep
 from app.models.event import EventCreate, EventDB, EventPublic
-from app.models.user import UserDB
+from app.models.user import CreateUser, UserDB
 from app.models.registration import Registration
 
 router = APIRouter(prefix="/events", tags=["events"])
@@ -62,7 +62,7 @@ def replace_event(
 @router.post("/{id}/register")
 def register_to_event(
     id: int,
-    user: UserDB,
+    user: CreateUser,
     session: SessionDep
 ) -> Registration:
 
