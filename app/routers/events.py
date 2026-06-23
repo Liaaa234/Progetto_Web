@@ -59,7 +59,7 @@ def replace_event(
 
 
 #API post
-@router.post("/events/{id}/register")
+@router.post("/{id}/register")
 def register_to_event(
     id: int,
     username: str,
@@ -106,7 +106,7 @@ def register_to_event(
 
 
 #API delete event
-@router.delete("/events/{id}")
+@router.delete("/{id}")
 def delete_event(
     id: int,
     session: SessionDep
