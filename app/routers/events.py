@@ -116,7 +116,7 @@ def delete_event(
     if not event:
         raise HTTPException(status_code=404, detail="Evento non trovato")
 
-    regisstrations = session.exec(      #facciamo in modo che quando eliminiamo un evento eliminiamo anche le sue registrazioni
+    registrations = session.exec(      #facciamo in modo che quando eliminiamo un evento eliminiamo anche le sue registrazioni
         select(Registration).where(Registration.event_id == id)
     ).all()
 
