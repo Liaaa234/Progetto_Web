@@ -9,5 +9,6 @@ class Registration(SQLModel, table=True):
 class Registration(SQLModel):     # attributi comuni
     username: str
     event_id: int
+
 class RegistrationPublic(Registration):   # usata nelle GET
     pass

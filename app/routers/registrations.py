@@ -20,7 +20,7 @@ def get_registrations(
 
     return registrations
 
-@router.delete("/{username}/{event_id}")
+@router.delete("/{username}/{id}")
 def delete_registration(
         username: str,
         event_id: int,
