@@ -62,8 +62,10 @@ def delete_user(username: str, session: SessionDep)-> dict:
         select(Registration)
         .where(Registration.username == username)
     ).all()
+
     for registration in registrations:
         session.delete(registration)
+
     session.delete(user)
     session.commit()
 
