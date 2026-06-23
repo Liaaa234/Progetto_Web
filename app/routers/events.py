@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
-from sqlmodel import select
+from sqlmodel import select, delete
 from app.data.db import SessionDep
 from app.models.event import EventCreate, EventDB, EventPublic
 from app.models.user import UserDB
@@ -112,34 +112,24 @@ def delete_event(
     session: SessionDep
 ):
 
-    event = session.get(EventDB, id)
+    """Deletes the event with the given id."""
 
-    if event is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Evento non trovato"
-        )
+    event = session.get(EventDB, id)
+    if not event:
+        raise HTTPException(status_code=404, detail="Evento non trovato")
 
     session.delete(event)
     session.commit()
-
-    return {"message": "Evento eliminato"}
+    return "Event deleted successfully"
 
 
 
 #API delete all events
-@router.delete("/events")
-def delete_all_events(
-    session: SessionDep
-):
+@router.delete("/")
+def delete_all_events(session: SessionDep):
 
-    events = session.exec(
-        select(EventDB)
-    ).all()
-
-    for event in events:
-        session.delete(event)
-
+    """Delete all events."""
+    session.exec(delete(EventDB))
     session.commit()
 
-    return {"message": "Tutti gli eventi eliminati"}
+    return "Events deleted successfully"
