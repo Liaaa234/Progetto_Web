@@ -14,6 +14,7 @@ class EventCreate(Event):   #creiamo la classe da usare nelle POST
     pass    #i campi sono ereditati da Event quindi lascio vuoti i campi
 
 class EventDB(Event, table=True):   #creiamo il collegamento tra il nostro codice e il dataabase
+    __tablename__ = "event"     #nome classe nel database
     id: int = Field(default=None, primary_key=True)
 
 class EventPublic(Event):   #usata nelle GET

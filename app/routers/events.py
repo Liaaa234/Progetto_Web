@@ -4,6 +4,7 @@ from app.data.db import SessionDep
 from app.models.event import EventCreate, EventDB, EventPublic
 from app.models.user import CreateUser, UserDB
 from app.models.registration import Registration
+from app.routers import registrations
 
 router = APIRouter(prefix="/events", tags=["events"])
 
@@ -76,7 +77,8 @@ def register_to_event(
     existing_user = session.get(UserDB, user.username)  #controlliamo se l'utente esiste già
 
     if existing_user is None:   #se non esiste si aggiunge
-        session.add(user)
+        user_entry = UserDB.model_validate(user)
+        session.add(user_entry)
         session.commit()
 
     existing_registration = session.exec(       #controlliamo se la registrazione esiste già
@@ -110,8 +112,16 @@ def delete_event(
     """Deletes the event with the given id."""
 
     event = session.get(EventDB, id)
+
     if not event:
         raise HTTPException(status_code=404, detail="Evento non trovato")
+
+    regisstrations = session.exec(      #facciamo in modo che quando eliminiamo un evento eliminiamo anche le sue registrazioni
+        select(Registration).where(Registration.event_id == id)
+    ).all()
+
+    for registration in registrations:
+        session.delete(registration)
 
     session.delete(event)
     session.commit()
