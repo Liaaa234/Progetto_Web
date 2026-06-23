@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import select
 from app.data.db import SessionDep
 from app.models.event import Event,EventCreate, EventDB, EventPublic
+from app.models.user import UserDB
+from app.models.registration import Registration
 
 router = APIRouter(prefix="/events", tags=["events"])
 
@@ -49,3 +51,91 @@ def replace_event(#MANCA ID NEI PARAMETRI CHE PRENDE IN ENTRATA LA FUNZIONE
     session.add(event)
     session.commit()
     return event
+
+
+
+#API post
+@router.post("/events/{id}/register")
+def register_to_event(
+    id: int,
+    username: str,
+    session: SessionDep
+):
+
+    event = session.get(EventDB, id)
+
+    if event is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Evento non trovato"
+        )
+
+    user = session.get(UserDB, username)
+
+    if user is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Utente non trovato"
+        )
+
+    registration = session.get(
+        Registration,
+        (username, id)
+    )
+
+    if registration is not None:
+        raise HTTPException(
+            status_code=400,
+            detail="Utente già registrato all'evento"
+        )
+
+    registration = Registration(
+        username=username,
+        event_id=id
+    )
+
+    session.add(registration)
+    session.commit()
+
+    return {"message": "Registrazione effettuata"}
+
+
+
+#API delete event
+@router.delete("/events/{id}")
+def delete_event(
+    id: int,
+    session: SessionDep
+):
+
+    event = session.get(EventDB, id)
+
+    if event is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Evento non trovato"
+        )
+
+    session.delete(event)
+    session.commit()
+
+    return {"message": "Evento eliminato"}
+
+
+
+#API delete all events
+@router.delete("/events")
+def delete_all_events(
+    session: SessionDep
+):
+
+    events = session.exec(
+        select(EventDB)
+    ).all()
+
+    for event in events:
+        session.delete(event)
+
+    session.commit()
+
+    return {"message": "Tutti gli eventi eliminati"}
