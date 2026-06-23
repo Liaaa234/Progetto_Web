@@ -4,7 +4,7 @@ from sqlmodel import select
 
 from app.models.user import UserDB, UserPublic, CreateUser
 from app.data.db import SessionDep
-
+from app.models.registration import Registration
 router = APIRouter(prefix="/users", tags=["users"])
 @router.get("/")
 def get_users(session: SessionDep)->list[UserPublic]:#fastapi crea una sessione del database per passarla alla funzione che restituisce una lista
@@ -58,7 +58,12 @@ def delete_user(username: str, session: SessionDep)-> dict:
 
     if user is None :
         raise HTTPException(status_code=404, detail="User not found")
-
+    registrations = session.exec(
+        select(Registration)
+        .where(Registration.username == username)
+    ).all()
+    for registration in registrations:
+        session.delete(registration)
     session.delete(user)
     session.commit()
 
