@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import select
 from app.data.db import SessionDep
-from app.models.event import Event,EventCreate, EventDB, EventPublic
+from app.models.event import EventCreate, EventDB, EventPublic
 from app.models.user import UserDB
 from app.models.registration import Registration
 
