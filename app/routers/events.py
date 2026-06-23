@@ -62,47 +62,42 @@ def replace_event(
 @router.post("/{id}/register")
 def register_to_event(
     id: int,
-    username: str,
+    user: UserDB,
     session: SessionDep
-):
+) -> Registration:
+
+    """Register the user with the given id."""
 
     event = session.get(EventDB, id)
 
     if event is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Evento non trovato"
+        raise HTTPException(status_code=404, detail="Evento non trovato")
+
+    existing_user = session.get(UserDB, user.username)  #controlliamo se l'utente esiste già
+
+    if existing_user is None:   #se non esiste si aggiunge
+        session.add(user)
+        session.commit()
+
+    existing_registration = session.exec(       #controlliamo se la registrazione esiste già
+        select(Registration).where(
+            Registration.username == user.username,
+            Registration.event_id == id
         )
+    ).first()
 
-    user = session.get(UserDB, username)
+    if existing_registration:       #se esiste già la restituiamo direttamente senza crearne un'altra
+        return existing_registration
 
-    if user is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Utente non trovato"
-        )
-
-    registration = session.get(
-        Registration,
-        (username, id)
-    )
-
-    if registration is not None:
-        raise HTTPException(
-            status_code=400,
-            detail="Utente già registrato all'evento"
-        )
-
-    registration = Registration(
-        username=username,
-        event_id=id
+    registration = Registration(    #creiamo la registrazione in caso non esista
+        username = user.username,
+        event_id = id,
     )
 
     session.add(registration)
     session.commit()
 
-    return {"message": "Registrazione effettuata"}
-
+    return registration
 
 
 #API delete event
