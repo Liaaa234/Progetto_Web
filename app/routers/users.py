@@ -47,15 +47,17 @@ def delete_users(session: SessionDep)-> dict:
     session.commit()
     return {"message": "All Users successfully deleted"}
 
-@router.delete("/{username}")
+@router.delete("/{username}") #ELIMINA UN UTENTE
 def delete_user(username: str, session: SessionDep)-> dict:
     """Delete one user."""
 
+    # Ricerca dell'utente da eliminare
     user = session.exec(
         select(UserDB)
         .where(UserDB.username == username)
     ).first()
 
+    # Se l'utente non è presente nel database, blocco la richiesta e restituisco Errore 404.
     if user is None :
         raise HTTPException(status_code=404, detail="User not found")
     registrations = session.exec(
@@ -63,11 +65,12 @@ def delete_user(username: str, session: SessionDep)-> dict:
         .where(Registration.username == username)
     ).all()
 
+    # Elimino tutte le registrazioni collegate all'utente
     for registration in registrations:
         session.delete(registration)
 
-    session.delete(user)
-    session.commit()
+    session.delete(user)  # Eliminazione dell'utente
+    session.commit()  # Salvataggio delle modifiche nel database
 
     return {
         "message":"User successfully deleted"
