@@ -6,10 +6,10 @@ from app.models.user import CreateUser, UserDB
 from app.models.registration import Registration
 from app.routers import registrations
 
-router = APIRouter(prefix="/events", tags=["events"])
+router = APIRouter(prefix="/events", tags=["events"])   #sottopercorso dedicato agli eventi, quindi tutte le APi presenti qui inizieranno con quel prefisso
 
 @router.get("/")    #prendiamo la lista di tutti gli eventi
-def get_all_events(session: SessionDep) -> list[EventPublic]: #comunichiamo con il database
+def get_all_events(session: SessionDep) -> list[EventPublic]: #comunichiamo con il database con Session
     """Return the list of all events."""
     events = session.exec(select(EventDB)).all()  #query
     return events
@@ -34,7 +34,7 @@ def create_event(
 ):
     """Create a new event."""
     event_entry = EventDB.model_validate(event)
-    session.add(event_entry)
+    session.add(event_entry)    #aggiungiamo l'evento al database
     session.commit()    #aggiorniamo l'oggetto e rendiamo effettive le modifiche
     return event_entry
 
@@ -45,11 +45,11 @@ def replace_event(
         new_event: EventCreate
 ):
     """Replace the event with the given id."""
-    event = session.get(EventDB, id)
+    event = session.get(EventDB, id)    #recuperiamo l'evento vecchio tramite l'id
     if not event:
-        raise HTTPException(status_code=404, detail="Event not found")
+        raise HTTPException(status_code=404, detail="Event not found")  #gestiamo l'errore in caso l'evento vecchio non esista
 
-    event.title = new_event.title
+    event.title = new_event.title   #sostituiamo il vecchio evento con il nuovo
     event.description = new_event.description
     event.date = new_event.date
     event.location = new_event.location
