@@ -17,5 +17,5 @@ class EventDB(Event, table=True):   #creiamo il collegamento tra il nostro codic
     __tablename__ = "event"     #nome classe nel database
     id: int = Field(default=None, primary_key=True)
 
-class EventPublic(Event):   #usata nelle GET
+class EventPublic(Event):   #classe usata nelle GET
     id: int
